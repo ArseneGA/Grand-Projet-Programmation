@@ -1,0 +1,384 @@
+import tkinter as tk                     
+from tkinter import *
+from pandas import DataFrame
+import pandas as pd
+from tkinter import ttk
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+
+
+
+root = tk.Tk() 
+root.title("FLIGHT ANALYSES SYSTEM") 
+tabControl = ttk.Notebook(root) 
+  
+tab1 = ttk.Frame(tabControl) 
+tab2 = ttk.Frame(tabControl) 
+tab3 = ttk.Frame(tabControl)
+
+tabControl.add(tab1, text ='LOGIN') 
+tabControl.add(tab2, text ='PASSENGERS')
+tabControl.add(tab3, text ='FLIGHT VISUALIZATION') 
+tabControl.pack(expand = 1, fill ="both")
+
+
+ttk.Label(tab1).grid(column = 0,  
+                               row = 0, 
+                               padx = 0, 
+                               pady = 0)   
+ttk.Label(tab2).grid(column = 0, 
+                                    row = 0,  
+                                    padx = 0, 
+                                    pady = 0) 
+
+ttk.Label(tab3).grid(column = 0, 
+                                    row = 0,  
+                                    padx = 800, 
+                                    pady = 350)
+
+
+
+######### 1 #########
+
+frame = tk.Frame(tab1, bg="white")
+frame.place(relwidth=1, relheight=1)
+
+df = pd.read_csv('user_info.csv', delimiter=',')
+b = df['email']
+c = df['password']
+email_utili = tk.StringVar()
+kmetres = tk.StringVar()
+
+mdp_utili = tk.StringVar()
+kmetres2 = tk.StringVar()
+
+new_mail = tk.StringVar()
+kmetres3 = tk.StringVar()
+
+new_mdp = tk.StringVar()
+kmetres4 = tk.StringVar()
+
+
+def login(*args):
+    a = 0
+    i = 0
+    
+    for csv_email in b:       # vérifications de l'existance de l'adresse email
+        i += 1
+        if str(csv_email).strip() == str(email_utili.get()) : 
+             a = 1
+             # a = 1 : utilisateur existant et a = 0 : utilisateur inexistant
+             break
+
+        if a == 0:
+            affichage_resultat1 = tk.Label(tab1, text="                                                                                                                        ")
+            affichage_resultat1.grid(column=3, row=6)
+            affichage_resultat1 = tk.Label(tab1, text="Pas un utilisateur valide !")
+            affichage_resultat1.grid(column=3, row=6)
+
+    numero = i
+
+    if str(mdp_utili.get()) == str(c [numero-1]): # concordance entre email et mdp
+        affichage_resultat1 = tk.Label(tab1, text="                                                                                                                              ")
+        affichage_resultat1.grid(column=3, row=6)
+        affichage_resultat1 = tk.Label(tab1, text="Bienvenue dans le système d’analyses !")
+        affichage_resultat1.grid(column=3, row=6)
+
+def signup(*args):
+    a = 0
+    nombre_element = len(b) + 1
+    for csv_email in b :
+        if str(csv_email).strip() == str(new_mail.get()) :
+            affichage_resultat2 = tk.Label(tab1, text="                                                                                                                              ")
+            affichage_resultat2.grid(column=3, row=10)
+            affichage_resultat2 = tk.Label(tab1, text="E-mail déjà inscrit !")
+            affichage_resultat2.grid(column=3, row=10)
+            a = 1
+   
+    position_user = nombre_element + 1
+   
+    if a == 0:
+        affichage_resultat2 = tk.Label(tab1, text="                                                                                                                              ")
+        affichage_resultat2.grid(column=3, row=10)
+        affichage_resultat2 = tk.Label(tab1, text="Nouvel utilisateur enregistré !")
+        affichage_resultat2.grid(column=3, row=10)
+        df2 = {'number': position_user, 'email': new_mail, 'password' : new_mdp}
+        df.append(df2, ignore_index = True)
+        df.to_csv('user_info.csv',index=False)
+
+
+label = tk.Label(tab1, text="Welcome to Flight Analyses System",font=("arial italic", 30) )
+label.grid(column=3, row=1)
+
+label1 = tk.Label(tab1, text="") 
+label1.grid(column=3, row=2)
+
+Entrée = tk.Entry(tab1, width=15, textvariable=email_utili)
+Entrée.grid(column=3, row=3)
+Entrée1 = tk.Entry(tab1, width=15, textvariable=mdp_utili)
+Entrée1.grid(column=3, row=4)
+
+button1 = tk.Button(tab1, text="login",highlightbackground="blue", fg="black", command=login)
+button1.grid(column=3, row=5)
+
+label2 = tk.Label(tab1, text="")
+label2.grid(column=3, row=6)
+
+Entrée2 = tk.Entry(tab1, width=15, textvariable=new_mail)
+Entrée2.grid(column=3, row=7)
+Entrée3 = tk.Entry(tab1, width=15, textvariable=new_mdp)
+Entrée3.grid(column=3, row=8)
+
+button2 = tk.Button(tab1, text="signup",highlightbackground="orange", fg="black", command=signup)
+button2.grid(column=3, row=9)
+
+T1= tk.Label(tab1, text="Email:", highlightbackground="blue", fg="blue" )
+T1.grid(column=1, row=3)
+T2= tk.Label(tab1, text="Password:",highlightbackground="blue", fg="blue")
+T2.grid(column=1, row=4)
+T3 = tk.Label(tab1, text="Email:", highlightbackground="orange", fg="orange" )
+T3.grid(column=1, row=7)
+T4 = tk.Label(tab1, text="Password:", highlightbackground="orange", fg="orange")
+T4.grid(column=1, row=8)
+
+
+
+######### 2 ##########
+
+frame = tk.Frame(tab2, bg="white")
+frame.place(relwidth=1, relheight=1)
+
+df = pd.read_csv('passenger_info.csv',delimiter=',')
+
+#print(df['Airline'])
+#print(df['Destination'])
+#print(df['Price'])
+#print(df)
+
+miles = tk.StringVar()
+kmetres = tk.StringVar()
+
+Entrée = ttk.Entry(tab2, width=15, textvariable=miles)
+
+
+company = list(set(df['Airline'].values.tolist()))
+
+destination = list(set(df['Destination'].values.tolist()))
+
+price= list(set(df['Price'].values.tolist()))
+
+spinbox = ttk.Spinbox(tab2, values=company)
+spinbox.grid(column=1, row=4)
+
+spinbox2 = ttk.Spinbox(tab2, values=destination )
+spinbox2.grid(column=3, row=4)
+
+spinbox3 = ttk.Spinbox(tab2, values=price )
+spinbox3.grid(column=5, row=4)
+
+label = Label(tab2, text = "                             Passenger Information                             ",font=("arial italic", 30))
+label.grid(column=10, row=6)
+
+
+# Tableau
+tableau = ttk.Treeview(tab2, columns=('Passengerid', 'Lastname', 'Terminal','Boarding Area'))
+tableau.heading('Passengerid', text='Passengerid')
+tableau.heading('Lastname', text='Lastname')
+tableau.heading('Terminal', text='Terminal')
+tableau.heading('Boarding Area', text='Boarding Area')
+tableau.insert(parent='', index=0, iid=0, text='', values=())
+tableau['show'] = 'headings' # sans ceci, il y avait une colonne vide à gauche qui a pour rôle d'afficher le paramètre "text" qui peut être spécifié lors du insert
+tableau.grid(column=10, row=10)
+
+
+def liste(*args):
+    df = pd.read_csv('passenger_info.csv', delimiter=",")
+    i = 0
+    confirmation = 0
+    for airline in df['Airline']:
+        i += 1
+        if str(airline) == spinbox.get():
+            numero = i - 1
+            destination = df['Destination']
+            prix = df['Price']
+            if str(destination[numero]) == spinbox2.get():
+                if str(prix[numero]) == spinbox3.get():
+                       confirmation = 1
+                       passengerid = df['PassengerID']
+                       a = str(passengerid[numero])
+                       nom = df['Lastname']
+                       b = str(nom[numero])
+                       terminal = df['Terminal']
+                       c = str(terminal[numero])
+                       zone = df['Boarding Area']
+                       d = str(zone[numero])
+                       affichage = tableau.insert(parent='', index=0, text='', values=(a,b,c,d))
+            
+
+ttk.Button(tab2, text=" List passengers ", command=liste).grid(column=1, row=5)
+tab2.bind('<Return>', liste) # lien controleur: touche - action
+
+# Bouton pour terminer le programme
+bouton_terminer = Button(tab2, text = 'Terminer', command = tab2.destroy)
+bouton_terminer.grid(column=10, row=10)
+
+
+######### 3 #########
+
+dd = pd.read_csv('flight_info.csv', delimiter = ',')
+
+tv = ttk.Treeview(tab3, column=('Year','Month','DayofMonth','DayOfWeek','FlightDate','FlightNum','OriginAirportID',
+                                'OriginCityName','OriginState','OriginStateName','DestAirportID','DestCityName','DestState',
+                                'DestStateName','DepTime','DepDelayMinutes','ArrTime','ArrDelayMinutes','AirTime','Distance'))
+tv.place(relwidth = 1, relheight = 1)
+
+tv.column('#0', width=0, stretch=NO)
+tv.column('Year', anchor=CENTER, width=80)
+tv.column('Month', anchor=CENTER, width=80)
+tv.column('DayofMonth', anchor=CENTER, width=80)
+tv.column('DayOfWeek', anchor=CENTER, width=80)
+tv.column('FlightDate', anchor=CENTER, width=80)
+tv.column('FlightNum', anchor=CENTER, width=80)
+tv.column('OriginAirportID',anchor=CENTER, width=80 ) 
+tv.column('OriginCityName', anchor=CENTER, width=80)
+tv.column('OriginState', anchor=CENTER, width=80)
+tv.column('OriginStateName', anchor=CENTER, width=80)
+tv.column('DestAirportID',anchor=CENTER, width=80)
+tv.column('DestCityName', anchor=CENTER, width=80)
+tv.column('DestState', anchor=CENTER, width=80)
+tv.column('DestStateName', anchor=CENTER, width=80)
+tv.column('DepTime',anchor=CENTER, width=80)
+tv.column('DepDelayMinutes',anchor=CENTER, width=80)
+tv.column('ArrTime', anchor=CENTER, width=80)
+tv.column('ArrDelayMinutes', anchor=CENTER, width=80)
+tv.column('AirTime', anchor=CENTER, width=80)
+tv.column('Distance', anchor=CENTER, width=80)
+
+tv.heading('#0', text='', anchor=CENTER)
+tv.heading('Year', text='Year', anchor=CENTER)
+tv.heading('Month', text='Month', anchor=CENTER)
+tv.heading('DayofMonth', text='DayofMonth', anchor=CENTER)
+tv.heading('DayOfWeek', text='DayOfWeek', anchor=CENTER)
+tv.heading('FlightDate', text='FlightDate', anchor=CENTER)
+tv.heading('FlightNum', text='FlightNum', anchor=CENTER)
+tv.heading('OriginAirportID', text='OriginAirportID', anchor=CENTER)
+tv.heading('OriginCityName', text='OriginCityName', anchor=CENTER)
+tv.heading('OriginState', text='OriginState', anchor=CENTER)
+tv.heading('OriginStateName', text='OriginStateName', anchor=CENTER)
+tv.heading('DestAirportID', text='DestAirportID', anchor=CENTER)
+tv.heading('DestCityName', text='DestCityName', anchor=CENTER)
+tv.heading('DestState', text='DestState', anchor=CENTER)
+tv.heading('DestStateName', text='DestStateName', anchor=CENTER)
+tv.heading('DepTime', text='DepTime', anchor=CENTER)
+tv.heading('DepDelayMinutes', text='DepDelayMinutes', anchor=CENTER)
+tv.heading('ArrTime', text='ArrTime', anchor=CENTER)
+tv.heading('ArrDelayMinutes', text='ArrDelayMinutes', anchor=CENTER)
+tv.heading('AirTime', text='AirTime', anchor=CENTER)
+tv.heading('Distance', text='Distance', anchor=CENTER)
+
+dd1 = dd['Year']
+dd2 = dd['Month']
+dd3 = dd['DayofMonth']
+dd4 = dd['DayOfWeek']
+dd5 = dd['FlightDate']
+dd6 = dd['FlightNum']
+dd7 = dd['OriginAirportID']
+dd8 = dd['OriginCityName']
+dd9 = dd['OriginState']
+dd10 = dd['OriginStateName']
+dd11 = dd['DestAirportID']
+dd12 = dd['DestCityName']
+dd13 = dd['DestState']
+dd14 = dd['DestStateName']
+dd15 = dd['DepTime']
+dd16 = dd['DepDelayMinutes']
+dd17 = dd['ArrTime']
+dd18 = dd['ArrDelayMinutes']
+dd19 = dd['AirTime']
+dd20 = dd['Distance']
+
+len(dd1)
+a = 0
+
+while a < len(dd1):
+    tv.insert(parent='',index=a, iid=a, text='', values=(dd1[a],dd2[a],dd3[a],dd4[a],dd5[a],dd6[a],dd7[a],dd8[a],dd9[a],dd10[a],dd11[a],dd12[a],dd13[a],dd14[a],dd15[a],dd16[a],dd17[a],dd18[a],dd19[a],dd20[a]))
+    a += 1
+
+tv.place(relx = 0, rely = 0, relwidth = 1, relheight = 0.25)
+
+data1 = {'Number': ['A        Arizona','B           Texas','C         Florida','D         North Carolina',
+                    'E        California','F           Pensylvania','G          Washington','H           Nevada',
+                    'I        Georgia','J         Virginia','K          Wisconsin','L              Ohio','M         Illinois',
+                    'N        Missouri','O         Nebraska','P           Indiana','Q            Utah',
+                    'R        Massachuset','S         Hawaii','T           New York','U               Iowa',
+                    'V        Minnesota','W          colorado','X          Oregon','Y           Maryland'],
+         'DestStateName': [1077,469,295,227,166,115,68,65,63,57,54,54,51,36,31,23,19,17,16,15,8,7,1,1,1]
+        }
+df1 = DataFrame(data1,columns=['Number','DestStateName'])
+
+
+data2 = {'DepDelay': ['Arizona','California','colorado','Florida','Georgia','Hawaii','Illinois','Indiana','Iowa','Maryland',
+           'Massachuset','Minnesota','Missouri','Nebraska','Nevada','New York','North Carolina','Ohio','Oregon',
+           'Pensylvania','Texas','Utah','Virginia','Washington','Wisconsin'],
+         'DepDelayMinutes': [10846,2057,1722,1734,768,243,736,286,36,22,21,66,220,180,630,174,1239,795,0,1288,4479,407,706,896,165]
+
+        }
+df2 = DataFrame(data2,columns=['DepDelay','DepDelayMinutes'])
+
+
+data3 = {'ArrDelay': ['Arizona','California','colorado','Florida','Georgia','Hawaii','Illinois','Indiana','Iowa','Maryland',
+           'Massachuset','Minnesota','Missouri','Nebraska','Nevada','New York','North Carolina','Ohio','Oregon',
+           'Pensylvania','Texas','Utah','Virginia','Washington','Wisconsin'],
+         'ArrDelayMinutes': [12527,3065,79,2038,869,483,644,246,27,27,4,70,231,89,961,122,1208,707,0,1201,6764,544,648,824,157]
+        }  
+df3 = DataFrame(data3,columns=['ArrDelay','ArrDelayMinutes'])
+ 
+
+
+data4 = {'Top15': ['Hawaii','Arizona','California','North Carolina','Nevada',
+                   'Ohio','Virginia','Florida','Minnesota','Indiana',
+                   'Texas','Wisconsin','Illinois','Nebraska','Pensylvania'],
+         'Distance': [2845,2845,2296,2296,2176,1995,1979,1972,1501,1488,1464,1460,1440,1330,1303]
+        }  
+df4 = DataFrame(data4,columns=['Top15','Distance'])
+
+figure1 = plt.Figure(figsize=(4,7), dpi=65)
+ax1 = figure1.add_subplot(111)
+bar1 = FigureCanvasTkAgg(figure1,tab3)
+t1= bar1.get_tk_widget()
+t1.place(relx = 0, rely = 0.26, relwidth = 0.25, relheight = 0.75)
+df1 = df1[['Number','DestStateName']].groupby('Number').sum()
+df1.plot(kind='bar', legend=True, ax=ax1 )
+ax1.set_title('The number of flight to diff. destinations')
+
+figure2 = plt.Figure(figsize=(4,7), dpi=65)
+ax2 = figure2.add_subplot(111)
+bar2 = FigureCanvasTkAgg(figure2,tab3)
+t2= bar2.get_tk_widget()
+t2.place(relx = 0.25, rely = 0.26, relwidth = 0.25, relheight = 0.75)
+df2 = df2[['DepDelay','DepDelayMinutes']].groupby('DepDelay').sum()
+df2.plot(kind='bar', legend=True, ax=ax2, color='red')
+#ax2.annotate('{:.1%}'.format())
+ax2.set_title('DepDelayMinutes Vs. DestStateName')
+
+figure3 = plt.Figure(figsize=(4,7), dpi=65)
+ax3 = figure3.add_subplot(111)
+bar3 = FigureCanvasTkAgg(figure3,tab3)
+t3= bar3.get_tk_widget()
+t3.place(relx = 0.5, rely = 0.26, relwidth = 0.25, relheight = 0.75)
+df3 = df3[['ArrDelay','ArrDelayMinutes']].groupby('ArrDelay').sum()
+df3.plot(kind='bar', legend=True, ax=ax3, color='red')
+ax3.set_title('ArrDelayMinutes Vs. DestStateName')
+
+figure4 = plt.Figure(figsize=(4,7), dpi=65)
+ax4 = figure4.add_subplot(111)
+bar4 = FigureCanvasTkAgg(figure4,tab3)
+t4= bar4.get_tk_widget()
+t4.place(relx = 0.75, rely = 0.26, relwidth = 0.25, relheight = 0.75)
+df4 = df4[['Top15','Distance']].groupby('Top15').sum()
+df4.plot(kind='bar', legend=True, ax=ax4)
+ax4.set_title('Top 15 far away destinations')
+
+
+
+root.mainloop()
